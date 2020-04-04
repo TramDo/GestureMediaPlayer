@@ -65,7 +65,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:onClick="clickOK"
-                android:text="@string/button01text"
+                android:text="@string/btnoktext"
                 android:textAppearance="?android:attr/textAppearanceMedium">
             </Button>
 
@@ -75,7 +75,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:onClick="clickExit"
-                android:text="@string/button03text"
+                android:text="@string/btnexittext"
                 android:textAppearance="?android:attr/textAppearanceMedium">
             </Button>
         </LinearLayout>

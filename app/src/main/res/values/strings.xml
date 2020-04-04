@@ -1,7 +1,9 @@
 <resources>
     <string name="app_name">Gesture Media Player</string>
     <string name="setuptitletext">Gesture Media Player</string>
-    <string name="button01text">OK</string>
-    <string name="button03text">Exit</string>
+    <string name="btnoktext">OK</string>
+    <string name="btnexittext">Exit</string>
     <string name="paramlabelinputtext">Input Method</string>
+    <string name="sensorlayoutext">Sensor Layout</string>
+
 </resources>
