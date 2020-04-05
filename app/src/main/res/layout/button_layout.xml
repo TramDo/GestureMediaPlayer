@@ -32,7 +32,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:id="@+id/controlBar">
+        android:id="@+id/controlBar"
+        android:layout_marginTop="10dp">
 
    <ImageButton
        android:id="@+id/btnBackward"
@@ -65,7 +66,8 @@
        android:layout_toEndOf="@+id/btnPause"
        android:layout_toRightOf="@+id/btnPause"
        android:src="@drawable/play"
-       android:background="@null"/>
+       android:background="@null"
+       />
 
    <ImageButton
         android:layout_width="wrap_content"
@@ -94,20 +96,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Small Text"
         android:id="@+id/durationtxt"
         android:textColor="#72B5C1"
         android:layout_above="@+id/seekBar"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignEnd="@id/seekBar"
-        android:layout_alignRight="@id/seekBar" />
+       />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Small Text"
         android:id="@+id/remainTimetxt"
         android:textColor="#72B5C1"
         android:layout_above="@+id/seekBar"
@@ -119,7 +118,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Medium Text"
         android:id="@+id/titletxt"
-        android:textColor="#72B5C1"
+        android:textColor="#C1728E"
         android:layout_alignBaseline="@+id/durationtxt"
         android:layout_alignBottom="@+id/durationtxt"
         android:layout_centerHorizontal="true" />
@@ -160,8 +159,8 @@
         android:layout_above="@id/volumeControl"
         android:text="50%"
         android:textColor="#72B5C1"
-        android:layout_marginLeft="5dp" />
-
+        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp" />
 </RelativeLayout>
 
 
