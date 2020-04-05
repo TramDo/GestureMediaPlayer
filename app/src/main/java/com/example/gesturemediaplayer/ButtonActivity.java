@@ -1,6 +1,8 @@
 package com.example.gesturemediaplayer;
 
 import android.app.Activity;
+import android.content.Context;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,8 +34,10 @@ public class ButtonActivity extends Activity implements OnClickListener {
     private int backwardTime = 5000;
     private TextView durationtxt, remainTimetxt, titletxt, progresstxt;
     private SeekBar volumeControl, seekbar; //slider
+    private AudioManager audioManager;
 
     public static int oneTimeOnly = 0;
+    //int maxVolume = 100;
 
 
 
@@ -41,6 +45,7 @@ public class ButtonActivity extends Activity implements OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.button_layout);
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
         btnPlay = (ImageButton)findViewById(R.id.btnPlay);
         btnPlay.setOnClickListener(this);
@@ -64,6 +69,10 @@ public class ButtonActivity extends Activity implements OnClickListener {
         btnPause.setEnabled(false);
 
         volumeControl = (SeekBar) findViewById(R.id.volumeControl);
+        audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+        volumeControl.setMax(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
+        volumeControl.setProgress(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
+        progresstxt.setText(String.valueOf(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC))+ "%");
         volumeControl.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
             int progressChangedValue = 0;
@@ -72,6 +81,8 @@ public class ButtonActivity extends Activity implements OnClickListener {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 progressChangedValue = progress;
                 progresstxt.setText(String.valueOf(progressChangedValue) + "%");
+                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,progress, 0);
+
             }
 
             @Override
@@ -82,6 +93,7 @@ public class ButtonActivity extends Activity implements OnClickListener {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 Log.i("Slider", "Progress: "+ progressChangedValue);
+
 
             }
         });
