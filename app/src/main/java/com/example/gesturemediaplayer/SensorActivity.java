@@ -23,8 +23,8 @@ public class SensorActivity extends Activity implements SensorEventListener {
 
     final static String MYDEBUG = "MYDEBUG";
 
-    final static int changedDegreeValue = 10;
-
+    final static int changedDegreeValue = 20;
+    final static int changedDegreeValuePitch = 30;
 
     private Handler myHandler = new Handler();
 
@@ -180,13 +180,13 @@ public class SensorActivity extends Activity implements SensorEventListener {
             if (roll >= -30 && roll <= 30){
                 changed = false;
             }
-            if (pitch >= 45.0f && Math.abs(pitch - currentPitchValue) >= changedDegreeValue){
+            if (pitch >= 45.0f && Math.abs(pitch - currentPitchValue) >= changedDegreeValuePitch && currentPitchValue < 45){
                 // mediaPlayer.start();
               //  Log.i(MYDEBUG, "X" + String.valueOf(pitch));
                 mediaPlayer.pause();
                 pasuePlaybutton.setImageResource(R.drawable.play);
             }
-            else if (pitch <= -45.0f && Math.abs(pitch - currentPitchValue) >= changedDegreeValue){
+            else if (pitch <= -45.0f && Math.abs(pitch - currentPitchValue) >= changedDegreeValuePitch && currentPitchValue > -45){
                 // mediaPlayer.pause();
                 //Log.i(MYDEBUG, "X" + String.valueOf(pitch));
                 mediaPlayer.start();
