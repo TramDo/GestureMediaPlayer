@@ -2,7 +2,6 @@ package com.example.gesturemediaplayer;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -47,7 +46,7 @@ public class SensorActivity extends Activity implements SensorEventListener {
 
     //UI component
     private SeekBar volumeSeekbar, progressSeekbar;
-    private ImageButton pasuePlaybutton;
+    private ImageButton pausePlaybutton;
     private TextView durationtxt,  progresstxt, remainTimetxt, titletxt;
 
 
@@ -59,7 +58,7 @@ public class SensorActivity extends Activity implements SensorEventListener {
 
         mediaPlayer = MediaPlayer.create(this, R.raw.song);
         volumeSeekbar = findViewById(R.id.volumeControl);
-        pasuePlaybutton = findViewById(R.id.btnPause);
+        pausePlaybutton = findViewById(R.id.btnPause);
         progressSeekbar = findViewById(R.id.seekBar);
         durationtxt = (TextView)findViewById(R.id.durationtxt);
         progresstxt = (TextView)findViewById(R.id.progresstxt);
@@ -78,7 +77,7 @@ public class SensorActivity extends Activity implements SensorEventListener {
         volumeSeekbar.setProgress(currentvolume);
         volumeSeekbar.setEnabled(false);
         float volumePercent = currentvolume / (float)maxvolume;
-        progresstxt.setText(String.valueOf(volumePercent * 100) + "%");
+        progresstxt.setText(String.valueOf(Math.round((volumePercent * 100)) + "%"));
         //Log.i(MYDEBUG, "start voulme" + String.valueOf(volumeSeekbar.getProgress() / maxvolume));
         progressSeekbar.setEnabled(false);
         finalTime = mediaPlayer.getDuration();
@@ -109,14 +108,14 @@ public class SensorActivity extends Activity implements SensorEventListener {
     @Override
     protected void onPause() {
         mediaPlayer.pause();
-        pasuePlaybutton.setImageResource(R.drawable.play);
+        pausePlaybutton.setImageResource(R.drawable.play);
         super.onPause();
     }
 
     @Override
     protected void onStop() {
         mediaPlayer.pause();
-        pasuePlaybutton.setImageResource(R.drawable.play);
+        pausePlaybutton.setImageResource(R.drawable.play);
         super.onStop();
     }
 
@@ -184,13 +183,13 @@ public class SensorActivity extends Activity implements SensorEventListener {
                 // mediaPlayer.start();
               //  Log.i(MYDEBUG, "X" + String.valueOf(pitch));
                 mediaPlayer.pause();
-                pasuePlaybutton.setImageResource(R.drawable.play);
+                pausePlaybutton.setImageResource(R.drawable.play);
             }
             else if (pitch <= -30.0f && Math.abs(pitch - currentPitchValue) >= changedDegreeValuePitch){
                 // mediaPlayer.pause();
                 //Log.i(MYDEBUG, "X" + String.valueOf(pitch));
                 mediaPlayer.start();
-                pasuePlaybutton.setImageResource(R.drawable.pause);
+                pausePlaybutton.setImageResource(R.drawable.pause);
             }
             else if (roll <= -30.0f && roll - currentRollValue <= -changedDegreeValue && Math.abs(pitch) < 30 && !changed){
                  // audioManager.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_PLAY_SOUND);
@@ -200,7 +199,7 @@ public class SensorActivity extends Activity implements SensorEventListener {
                 audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentvolume, AudioManager.FLAG_SHOW_UI);
                 volumeSeekbar.setProgress(currentvolume);
                 float volumePercent = currentvolume / (float)maxvolume;
-                progresstxt.setText(String.valueOf(  volumePercent * 100) + "%");
+                progresstxt.setText(String.valueOf(Math.round((  volumePercent * 100)) + "%"));
                 changed = !changed;
 
             }
@@ -212,7 +211,7 @@ public class SensorActivity extends Activity implements SensorEventListener {
                 audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentvolume, AudioManager.FLAG_SHOW_UI);
                 volumeSeekbar.setProgress(currentvolume);
                 float volumePercent = currentvolume / (float)maxvolume;
-                progresstxt.setText(String.valueOf(  volumePercent * 100) + "%");
+                progresstxt.setText(String.valueOf(Math.round((  volumePercent * 100)) + "%"));
                 changed = !changed;
             }
         }

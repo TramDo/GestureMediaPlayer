@@ -26,7 +26,7 @@ public class SetupActivity extends Activity implements AdapterView.OnItemSelecte
 
         spinMethod = (Spinner) findViewById(R.id.paramInput);
 
-        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(this,R.layout.support_simple_spinner_dropdown_item,
+        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(this,R.layout.spinnerstyle,
                 INPUT_METHOD_STRING);
         spinMethod.setAdapter(adapter);
     }
@@ -127,12 +127,7 @@ public class SetupActivity extends Activity implements AdapterView.OnItemSelecte
         super.onDestroy();
     }
 
-    // simple Comparator to sort the sensor list by sensor type
-    private static class ByType implements Comparator<Sensor> {
-        public int compare(Sensor a, Sensor b) {
-            return a.getType() - b.getType();
-        }
-    }
+
 }
 
 

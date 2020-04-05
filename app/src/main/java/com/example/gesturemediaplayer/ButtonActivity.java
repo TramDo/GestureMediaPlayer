@@ -78,7 +78,7 @@ public class ButtonActivity extends Activity implements OnClickListener {
 
         volumeControl = (SeekBar) findViewById(R.id.volumeControl);
 
-        progresstxt.setText(String.valueOf(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC))+ "%");
+        progresstxt.setText(String.valueOf(Math.round(((currentvolume / (float)maxvolume) * 100)) + "%"));
 
         volumeControl.setMax(maxvolume);
         volumeControl.setProgress(currentvolume);
@@ -92,7 +92,7 @@ public class ButtonActivity extends Activity implements OnClickListener {
                 progressChangedValue = progress;
 
                 float volumePercent = progress / (float)maxvolume;
-                progresstxt.setText(String.valueOf(volumePercent * 100) + "%");
+                progresstxt.setText(String.valueOf(Math.round(volumePercent * 100)) + "%");
                 audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress, AudioManager.FLAG_SHOW_UI);
 
             }

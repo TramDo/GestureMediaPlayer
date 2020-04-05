@@ -3,7 +3,7 @@
     <string name="setuptitletext">Gesture Media Player</string>
     <string name="btnoktext">OK</string>
     <string name="btnexittext">Exit</string>
-    <string name="paramlabelinputtext">Input Method</string>
+    <string name="paramlabelinputtext">Input Method: </string>
     <string name="sensorlayoutext">Sensor Layout</string>
 
 </resources>
