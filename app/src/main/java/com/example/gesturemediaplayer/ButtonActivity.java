@@ -1,6 +1,8 @@
 package com.example.gesturemediaplayer;
 
 import android.app.Activity;
+import android.content.Context;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,15 +25,19 @@ public class ButtonActivity extends Activity implements OnClickListener {
     private ImageButton btnPlay, btnPause, btnForward,  btnBackward;
     private ImageView iv;
     private MediaPlayer mediaPlayer;
+    private AudioManager audioManager;
 
     private double startTime = 0;
     private double finalTime = 0;
+    private int maxvolume;
+    private int currentvolume;
 
     private Handler myHandler = new Handler();
     private int forwardTime = 5000;
     private int backwardTime = 5000;
     private TextView durationtxt, remainTimetxt, titletxt, progresstxt;
     private SeekBar volumeControl, seekbar; //slider
+
 
     public static int oneTimeOnly = 0;
 
@@ -63,7 +69,13 @@ public class ButtonActivity extends Activity implements OnClickListener {
         seekbar.setClickable(false);
         btnPause.setEnabled(false);
 
+        audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+        maxvolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        currentvolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+
         volumeControl = (SeekBar) findViewById(R.id.volumeControl);
+        volumeControl.setMax(maxvolume);
+        volumeControl.setProgress(currentvolume);
         volumeControl.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
             int progressChangedValue = 0;
@@ -71,7 +83,9 @@ public class ButtonActivity extends Activity implements OnClickListener {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 progressChangedValue = progress;
-                progresstxt.setText(String.valueOf(progressChangedValue) + "%");
+                float volumePercent = progress / (float)maxvolume;
+                progresstxt.setText(String.valueOf(volumePercent * 100) + "%");
+                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress, AudioManager.FLAG_SHOW_UI);
             }
 
             @Override
