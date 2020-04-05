@@ -129,8 +129,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:padding="10dp"
-        android:max="100"
-        android:progress="50"
         android:layout_above="@+id/titletxt"
         android:layout_alignLeft="@+id/imageView"
         android:layout_alignStart="@+id/imageView"
@@ -157,7 +155,6 @@
         android:layout_toRightOf="@+id/volumetxt"
         android:layout_alignBottom="@+id/volumetxt"
         android:layout_above="@id/volumeControl"
-        android:text="50%"
         android:textColor="#72B5C1"
         android:layout_marginLeft="5dp"
         android:layout_marginStart="5dp" />
