@@ -37,7 +37,7 @@ public class ButtonActivity extends Activity implements OnClickListener {
     private int backwardTime = 5000;
     private TextView durationtxt, remainTimetxt, titletxt, progresstxt;
     private SeekBar volumeControl, seekbar; //slider
-    private AudioManager audioManager;
+
 
 
     public static int oneTimeOnly = 0;
