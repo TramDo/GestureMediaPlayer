@@ -8,11 +8,6 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:background="#DAF7A6"
     tools:context=".SensorActivity">
-    <Chronometer
-        android:id="@+id/chrono"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#FFFFFF" />
 
     <TextView android:text="Music Player"
         android:layout_width="wrap_content"
@@ -32,6 +27,16 @@
         android:layout_below="@+id/textView"
         android:layout_centerHorizontal="true"
         android:src="@drawable/logo"/>
+
+    <TextView android:text="gesture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:id="@+id/gesturetext"
+        android:textSize="30dp"
+        android:textColor="#72B5C1"
+        android:layout_below="@+id/imageView"
+        android:layout_centerHorizontal="true" />
 
     <LinearLayout
         android:layout_width="match_parent"

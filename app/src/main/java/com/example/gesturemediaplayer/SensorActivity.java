@@ -20,6 +20,7 @@ import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -31,7 +32,7 @@ public class SensorActivity extends Activity implements SensorEventListener {
     final static int changedDegreeValue = 20;
     final static int changedDegreeValuePitch = 30;
     final static int timeForCount = 1000000;
-    final static int totalTrailTime = 1;
+
 
     private Handler myHandler = new Handler();
 
@@ -48,7 +49,10 @@ public class SensorActivity extends Activity implements SensorEventListener {
     private float roll;
     private boolean enterActivity;
     private boolean changed = false;
+    private boolean pchanged = false;
     private CountDownTimer countUptimer;
+    private UserData userData;
+    private int totalTrailTime = 5;
 
     private double startTime = 0;
     private double finalTime = 0;
@@ -57,14 +61,16 @@ public class SensorActivity extends Activity implements SensorEventListener {
     private int trailTime = 0;
     private int currentGestureIndex = 0;
     private float currenttime = 0.0f;
+    private int errorNumber = 0;
     private String[] GestureArray = {"Play", "Up", "Up", "Down", "Down", "Pause", "Play", "Pause"};
-    private List<Float> durationTimeList = new ArrayList<Float>();
+    private float durationTimeArray[];
+    private int errorTimeArray[];
 
     //UI component
     private SeekBar volumeSeekbar, progressSeekbar;
     private ImageButton pausePlaybutton;
-    private TextView durationtxt,  progresstxt, remainTimetxt, titletxt;
-    private Chronometer timer;
+    private TextView durationtxt,  progresstxt, remainTimetxt, titletxt, gestureText;
+
 
 
     @Override
@@ -73,6 +79,12 @@ public class SensorActivity extends Activity implements SensorEventListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sensor_layout);
 
+        Intent intent = getIntent();
+        if (intent != null){
+            userData = (UserData) intent.getSerializableExtra("userdata");
+            Log.i(MYDEBUG, "gender" + userData.getInitial());
+        }
+        totalTrailTime = userData.getTrialnumber() + 1;
         mediaPlayer = MediaPlayer.create(this, R.raw.song);
         volumeSeekbar = findViewById(R.id.volumeControl);
         pausePlaybutton = findViewById(R.id.btnPause);
@@ -80,9 +92,10 @@ public class SensorActivity extends Activity implements SensorEventListener {
         durationtxt = (TextView)findViewById(R.id.durationtxt);
         progresstxt = (TextView)findViewById(R.id.progresstxt);
         remainTimetxt = (TextView)findViewById(R.id.remainTimetxt);
+        gestureText = findViewById(R.id.gesturetext);
         titletxt = (TextView)findViewById(R.id.titletxt);
-        timer =  findViewById(R.id.chrono);
         titletxt.setText("Song.mp3");
+        gestureText.setText("Play");
 
         sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         gyroSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
@@ -102,6 +115,7 @@ public class SensorActivity extends Activity implements SensorEventListener {
         startTime = mediaPlayer.getCurrentPosition();
        // mediaPlayer.seekTo(0);
         progressSeekbar.setMax((int) finalTime);
+
 
         remainTimetxt.setText(String.format("%d min, %d sec",
                 TimeUnit.MILLISECONDS.toMinutes((long) finalTime),
@@ -130,6 +144,12 @@ public class SensorActivity extends Activity implements SensorEventListener {
         super.onResume();
         enterActivity = false;
         trailTime = 0;
+        currentGestureIndex = 0;
+        errorNumber = 0;
+        durationTimeArray = new float[totalTrailTime];
+        errorTimeArray = new int[totalTrailTime];
+        gestureText.setText("Play");
+       // Log.i(MYDEBUG, "trail time" + String.valueOf(durationTimeArray[trailTime]));
         myHandler.postDelayed(UpdateSongTime, 100);
         sensorManager.registerListener(this, gyroSensor, SensorManager.SENSOR_DELAY_NORMAL);
         sensorManager.registerListener(this, rotateSensor, SensorManager.SENSOR_DELAY_NORMAL);
@@ -151,6 +171,8 @@ public class SensorActivity extends Activity implements SensorEventListener {
         mediaPlayer.pause();
         pausePlaybutton.setImageResource(R.drawable.play);
         mediaPlayer.stop();
+        sensorManager.unregisterListener(this, gyroSensor);
+        sensorManager.unregisterListener(this, rotateSensor);
         if (countUptimer != null)
             countUptimer.cancel();
         super.onStop();
@@ -160,6 +182,9 @@ public class SensorActivity extends Activity implements SensorEventListener {
     protected void onDestroy() {
         mediaPlayer.pause();
         mediaPlayer.stop();
+        sensorManager.unregisterListener(this, gyroSensor);
+        sensorManager.unregisterListener(this, rotateSensor);
+
         if (countUptimer != null)
             countUptimer.cancel();
         super.onDestroy();
@@ -218,40 +243,57 @@ public class SensorActivity extends Activity implements SensorEventListener {
             if (roll >= -30 && roll <= 30){
                 changed = false;
             }
-            if (pitch >= 20.0f && Math.abs(pitch - currentPitchValue) >= changedDegreeValuePitch){
+            if (pitch >= -30 && pitch <= 30){
+                pchanged = false;
+            }
+            if (pitch >= 20.0f && pitch - currentPitchValue >= changedDegreeValuePitch && !pchanged){
                 // mediaPlayer.start();
               //  Log.i(MYDEBUG, "X" + String.valueOf(pitch));
                 if (mediaPlayer.isPlaying())
                     mediaPlayer.pause();
                 pausePlaybutton.setImageResource(R.drawable.play);
+                pchanged = !pchanged;
                 if ( currentGestureIndex < GestureArray.length && GestureArray[currentGestureIndex] == "Pause"){
                     currentGestureIndex++;
                     if (currentGestureIndex == GestureArray.length){
                         if (countUptimer != null)
                             countUptimer.cancel();
+                        durationTimeArray[trailTime] = currenttime;
+                        errorTimeArray[trailTime] = errorNumber;
+                        Log.i(MYDEBUG, "trail time" + String.valueOf( errorNumber));
                         trailTime++;
-                        durationTimeList.add(currenttime);
-
                         currentGestureIndex = 0;
-                        Log.i(MYDEBUG, "trail time" + String.valueOf(currenttime));
+                        errorNumber = 0;
                         if (trailTime == totalTrailTime){
-                            trailTime = 0;
-                            durationTimeList = new ArrayList<>();
                             Bundle bundle = new Bundle();
-                            //bundle.putf
                             Intent intent = new Intent(this, ResultActivity.class);
+                            intent.putExtra("trailTimeArray", durationTimeArray);
+                            intent.putExtra("errornumberArray", errorTimeArray);
+                            intent.putExtra("errornumber", errorNumber);
+                            intent.putExtra("userdata", userData);
+                            trailTime = 0;
+                            durationTimeArray = new float[totalTrailTime];
+                            errorTimeArray = new int[totalTrailTime];
+                            errorNumber = 0;
                             startActivity(intent);
                         }
                     }
+                    else{
+                        gestureText.setText(GestureArray[currentGestureIndex]);
+                    }
+                }
+                else{
+                    Log.i("MYDEBUGG", "error");
+                    errorNumber++;
                 }
 
             }
-            else if (pitch <= -20.0f && Math.abs(pitch - currentPitchValue) >= changedDegreeValuePitch){
+            else if (pitch <= -20.0f && pitch - currentPitchValue <= -changedDegreeValuePitch && !pchanged){
                 // mediaPlayer.pause();
                 //Log.i(MYDEBUG, "X" + String.valueOf(pitch));
                 mediaPlayer.start();
                 pausePlaybutton.setImageResource(R.drawable.pause);
-
+                pchanged = !pchanged;
                 if (currentGestureIndex == 0){
                     countUptimer.cancel();
                     countUptimer.start();
@@ -261,6 +303,11 @@ public class SensorActivity extends Activity implements SensorEventListener {
                 }
                 if ( currentGestureIndex < GestureArray.length && GestureArray[currentGestureIndex] == "Play"){
                     currentGestureIndex++;
+                    gestureText.setText(GestureArray[currentGestureIndex]);
+                }
+                else{
+                    Log.i("MYDEBUGG", String.valueOf(pchanged));
+                    errorNumber++;
                 }
             }
             else if (roll <= -30.0f && roll - currentRollValue <= -changedDegreeValue && Math.abs(pitch) < 30 && !changed){
@@ -275,6 +322,11 @@ public class SensorActivity extends Activity implements SensorEventListener {
                 changed = !changed;
                 if ( currentGestureIndex < GestureArray.length && GestureArray[currentGestureIndex] == "Up"){
                     currentGestureIndex++;
+                    gestureText.setText(GestureArray[currentGestureIndex]);
+                }
+                else{
+                    Log.i("MYDEBUGG", "error3");
+                    errorNumber++;
                 }
             }
             else if(roll >= 30.0f  && roll - currentRollValue >= changedDegreeValue &&  Math.abs(pitch) < 30 && !changed){
@@ -289,11 +341,17 @@ public class SensorActivity extends Activity implements SensorEventListener {
                 changed = !changed;
                 if ( currentGestureIndex < GestureArray.length && GestureArray[currentGestureIndex] == "Down"){
                     currentGestureIndex++;
+                    gestureText.setText(GestureArray[currentGestureIndex]);
+                }
+                else{
+                    Log.i("MYDEBUGG", "error4");
+                    errorNumber++;
                 }
             }
+            currentRollValue = roll;
+            currentPitchValue = pitch;
         }
-        currentRollValue = roll;
-        currentPitchValue = pitch;
+
     }
 
 

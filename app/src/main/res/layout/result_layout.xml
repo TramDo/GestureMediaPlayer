@@ -39,7 +39,7 @@
             <TableRow>
 
                 <TextView
-                    android:id="@+id/LapsText"
+                    android:id="@+id/InitialInputText"
                     android:gravity="right"
                     android:paddingRight="5dp"
                     android:text="Initials = "
@@ -47,14 +47,24 @@
 
 
             </TableRow>
-
             <TableRow>
 
                 <TextView
-                    android:id="@+id/paramLabelGain"
+                    android:id="@+id/GenderText"
                     android:gravity="right"
                     android:paddingRight="5dp"
-                    android:text="Number of Trails = "
+                    android:text="Gender = "
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+
+            </TableRow>
+            <TableRow>
+
+                <TextView
+                    android:id="@+id/trialLabelInput"
+                    android:gravity="right"
+                    android:paddingRight="5dp"
+                    android:text="Number of Trials = "
                     android:textAppearance="?android:attr/textAppearanceMedium"/>
 
 
@@ -63,7 +73,7 @@
             <TableRow>
 
                 <TextView
-                    android:id="@+id/wallhitsc"
+                    android:id="@+id/Method"
                     android:gravity="right"
                     android:paddingRight="5dp"
                     android:text="Input Method = "
@@ -75,10 +85,13 @@
             <TableRow>
 
                 <TextView
-                    android:id="@+id/onlapavr"
+                    android:id="@+id/TimePerTrial"
                     android:gravity="right"
+                    android:layout_width="10dp"
                     android:paddingRight="5dp"
-                    android:text="Time Per Trail = "
+                    android:text="Time Per Trial = "
+                    android:inputType="textMultiLine"
+
                     android:textAppearance="?android:attr/textAppearanceMedium"/>
 
 
@@ -90,7 +103,31 @@
                     android:id="@+id/averagetrailtime"
                     android:gravity="right"
                     android:paddingRight="5dp"
-                    android:text="Average Per Trail = "
+                    android:text="Average Per Trial = "
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:id="@+id/errornumber"
+                    android:gravity="right"
+                    android:paddingRight="5dp"
+                    android:layout_width="10dp"
+                    android:text="Error Number = "
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+
+            </TableRow>
+            <TableRow>
+
+                <TextView
+                    android:id="@+id/errorrate"
+                    android:gravity="right"
+                    android:paddingRight="5dp"
+                    android:text="Error Rate = "
                     android:textAppearance="?android:attr/textAppearanceMedium"/>
 
 

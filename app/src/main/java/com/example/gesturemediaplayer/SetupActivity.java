@@ -9,26 +9,46 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 public class SetupActivity extends Activity implements AdapterView.OnItemSelectedListener {
     final static String MYDEBUG = "MYDEBUG"; // for Log.i messages
     final static String[] INPUT_METHOD_STRING = {"Gesture", "Button"};
-    private Spinner spinMethod;
+    final static String[] GENDER_STRING = {"Male", "Female", "Other"};
+    final static String[] TRIAL_NUMBER_STRING = {"1", "2", "3", "4", "5"};
+    private Spinner spinMethod, spinGender, spinTrial;
+    private UserData userData;
+    private EditText initialUI;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         //Log.i(MYDEBUG, "onCreate! (setup)");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setup_layout);
 
+        initialUI = (EditText) findViewById(R.id.InitialInput);
         spinMethod = (Spinner) findViewById(R.id.paramInput);
+        spinGender = (Spinner) findViewById(R.id.GenderInput);
+        spinTrial = (Spinner) findViewById(R.id.TrialInput);
+
 
         ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(this,R.layout.spinnerstyle,
                 INPUT_METHOD_STRING);
         spinMethod.setAdapter(adapter);
+
+        ArrayAdapter<CharSequence> adaptergender = new ArrayAdapter<CharSequence>(this,R.layout.spinnerstyle,
+                GENDER_STRING);
+        spinGender.setAdapter(adaptergender);
+
+        ArrayAdapter<CharSequence> adapterTrial = new ArrayAdapter<CharSequence>(this,R.layout.spinnerstyle,
+                TRIAL_NUMBER_STRING);
+        spinTrial.setAdapter(adapterTrial);
+
+        userData = new UserData();
 
         if (getIntent().getBooleanExtra("EXIT", false)) {
             finish();
@@ -57,13 +77,27 @@ public class SetupActivity extends Activity implements AdapterView.OnItemSelecte
         // get user's choices --> the input method
 
         // locate the input method selected by the user
+        String initial = initialUI.getText().toString();
 
         int methodIndex = spinMethod.getSelectedItemPosition();
         String inputMethod = INPUT_METHOD_STRING[methodIndex];
-        Log.i(MYDEBUG, inputMethod);
+
+        int GenderIndex = spinGender.getSelectedItemPosition();
+        String gendner = GENDER_STRING[GenderIndex];
+        Log.i(MYDEBUG, gendner);
+
+        int trialIndex = spinTrial.getSelectedItemPosition();
+        String trial = TRIAL_NUMBER_STRING[trialIndex];
 
 
+        userData.setInitial(initial);
+        userData.setGender(gendner);
+        userData.setMethod(inputMethod);
+        userData.setTrial(trial);
+        userData.setTrialnumber(trialIndex);
         Intent i;
+
+
         if (inputMethod == "Gesture") {
             i = new Intent(getApplicationContext(), SensorActivity.class);
 
@@ -72,7 +106,7 @@ public class SetupActivity extends Activity implements AdapterView.OnItemSelecte
             i = new Intent(getApplicationContext(), ButtonActivity.class);
 
         }
-
+        i.putExtra("userdata", userData);
         startActivity(i);
     }
 
