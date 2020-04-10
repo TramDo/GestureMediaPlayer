@@ -271,6 +271,7 @@ public class SensorActivity extends Activity implements SensorEventListener {
                             intent.putExtra("errornumberArray", errorTimeArray);
                             intent.putExtra("errornumber", errorNumber);
                             intent.putExtra("userdata", userData);
+                            intent.putExtra("method", "Sensor");
                             trailTime = 0;
                             durationTimeArray = new float[totalTrailTime];
                             errorTimeArray = new int[totalTrailTime];

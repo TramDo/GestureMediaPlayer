@@ -2,6 +2,7 @@ package com.example.gesturemediaplayer;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -18,6 +19,9 @@ import android.view.View.OnClickListener;
 
 import com.example.gesturemediaplayer.*;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class ButtonActivity extends Activity implements OnClickListener {
@@ -35,21 +39,47 @@ public class ButtonActivity extends Activity implements OnClickListener {
     private Handler myHandler = new Handler();
     private int forwardTime = 5000;
     private int backwardTime = 5000;
-    private TextView durationtxt, remainTimetxt, titletxt, progresstxt;
+    private TextView durationtxt, remainTimetxt, titletxt, progresstxt, trialtxt, erortxt;
     private SeekBar volumeControl, seekbar; //slider
 
-
+    private UserData userData;
 
     public static int oneTimeOnly = 0;
     //int maxVolume = 100;
+    long startTimer, endTimer; //System.nanoTime();
+    float timer; //=(endTimer - startTimer)/ 1000000000f;
+    final String PLAY = "play", PAUSE = "pause", VOL_UP="vol_up", VOL_DOWN="vol_down";
+    List<String> defaultTasks = new ArrayList<String>();
 
+    List<String> userTasks = new ArrayList<String>();
+    int trials=0;
+    int timesOfPlay=0, timeOfPause =0, timeOfVolUp=0, timeOfVolDown=0, numberOfError=0, numberOfScreenTouch=0;
+    List<Float>timePerTrial = new ArrayList<Float>();
+    List<Integer>errorPerTrial = new ArrayList<Integer>();
+    int totalTrailTime;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.button_layout);
+
+        Intent intent = getIntent();
+        if (intent != null){
+            userData = (UserData) intent.getSerializableExtra("userdata");
+
+        }
+        totalTrailTime = userData.getTrialnumber() + 1;
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
+
+        defaultTasks.add(PLAY);
+        defaultTasks.add(VOL_UP);
+        defaultTasks.add(VOL_UP);
+        defaultTasks.add(VOL_DOWN);
+        defaultTasks.add(VOL_DOWN);
+        defaultTasks.add(PAUSE);
+        defaultTasks.add(PLAY);
+        defaultTasks.add(PAUSE);
 
         btnPlay = (ImageButton)findViewById(R.id.btnPlay);
         btnPlay.setOnClickListener(this);
@@ -66,6 +96,9 @@ public class ButtonActivity extends Activity implements OnClickListener {
         remainTimetxt = (TextView)findViewById(R.id.remainTimetxt);
         progresstxt = (TextView)findViewById(R.id.progresstxt);
         titletxt.setText("Song.mp3");
+        trialtxt = (TextView)findViewById(R.id.trialtxt);
+        erortxt = (TextView)findViewById(R.id.erortxt);
+
 
         mediaPlayer = MediaPlayer.create(this, R.raw.song);
         seekbar = (SeekBar)findViewById(R.id.seekBar);
@@ -95,6 +128,7 @@ public class ButtonActivity extends Activity implements OnClickListener {
                 progresstxt.setText(String.valueOf(Math.round(volumePercent * 100)) + "%");
                 audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress, AudioManager.FLAG_SHOW_UI);
 
+
             }
 
             @Override
@@ -104,8 +138,24 @@ public class ButtonActivity extends Activity implements OnClickListener {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                Log.i("Slider", "Progress: "+ progressChangedValue);
+                //Log.i("Slider", "Progress: "+ progressChangedValue);
 
+                if (progressChangedValue > currentvolume ){
+                    userTasks.add(VOL_UP);
+                    Log.i("user task ",userTasks.toString());
+                    recordError();
+                    endTask();
+                    endTrial();
+                }
+                else if (progressChangedValue < currentvolume){
+                    userTasks.add(VOL_DOWN);
+                    Log.i("user task ",userTasks.toString());
+                    recordError();
+                    endTask();
+                    endTrial();
+                }
+
+                currentvolume = progressChangedValue;
 
             }
         });
@@ -118,14 +168,19 @@ public class ButtonActivity extends Activity implements OnClickListener {
     public void onClick(View view) {
         if (view == btnPlay){
 
-            //Toast.makeText(getApplicationContext(), "Playing sound",Toast.LENGTH_SHORT).show();
             mediaPlayer.start();
+            timesOfPlay++;
+            if(timesOfPlay == 1){
+                startTimer = System.nanoTime();
+            }
+            userTasks.add(PLAY);
+            Log.i("user task ",userTasks.toString());
+            recordError();
+            endTask();
+            endTrial();
+
             finalTime = mediaPlayer.getDuration();
             startTime = mediaPlayer.getCurrentPosition();
-           /* if (oneTimeOnly == 0){
-                seekbar.setMax((int) finalTime);
-                oneTimeOnly = 1;
-            }*/
             seekbar.setMax((int) finalTime);
 
             durationtxt.setText(String.format("%d min, %d sec",
@@ -146,9 +201,18 @@ public class ButtonActivity extends Activity implements OnClickListener {
         } else if (view == btnPause){
             //Toast.makeText(getApplicationContext(), "Pausing sound",Toast.LENGTH_SHORT).show();
             mediaPlayer.pause();
+            timeOfPause++;
+            userTasks.add(PAUSE);
+            Log.i("user task ",userTasks.toString());
+            recordError();
+            endTask();
+            endTrial();
             btnPause.setEnabled(false);
             btnPlay.setEnabled(true);
-        } else if (view == btnBackward){
+
+
+        }
+        else if (view == btnBackward){
             int temp = (int)startTime;
 
             if((temp-backwardTime)>0){
@@ -158,6 +222,8 @@ public class ButtonActivity extends Activity implements OnClickListener {
             }else{
                 Toast.makeText(getApplicationContext(),"Cannot jump backward 5 seconds",Toast.LENGTH_SHORT).show();
             }
+
+
 
         } else if (view == btnForward){
             int temp = (int)startTime;
@@ -170,6 +236,8 @@ public class ButtonActivity extends Activity implements OnClickListener {
                 Toast.makeText(getApplicationContext(),"Cannot jump forward 5 seconds",Toast.LENGTH_SHORT).show();
             }
         }
+
+
     }
 
     private Runnable UpdateSongTime = new Runnable() {
@@ -188,6 +256,56 @@ public class ButtonActivity extends Activity implements OnClickListener {
     };
 
     @Override
+    public  void onUserInteraction(){
+        numberOfScreenTouch++;
+
+    }
+
+    public void endTask(){
+        if(userTasks.size()==8) {
+            endTimer = System.nanoTime();
+            timer = (endTimer - startTimer)/ 1000000000f;
+            timePerTrial.add(timer);
+            errorPerTrial.add(numberOfError);
+            timeOfPause=0;
+            timesOfPlay=0;
+            numberOfError=0;
+            erortxt.setText("Number of errors: " + numberOfError);
+            userTasks.clear();
+            trials++;
+            trialtxt.setText("Number of trials: " + trials);
+
+        }
+
+    }
+
+    public void endTrial(){
+        if (trials==totalTrailTime){
+            Intent i = new Intent(getApplicationContext(), ResultActivity.class);
+            Bundle b = new Bundle();
+            b.putString("method", "Button");
+            i.putExtra("timePerTrial", (Serializable) timePerTrial);
+            i.putExtra("errorPerTrial", (Serializable)errorPerTrial);
+            i.putExtra("userdata", userData);
+            i.putExtras(b);
+            startActivity(i);
+        }
+    }
+
+    public void recordError() {
+        if (userTasks.size() != 0) {
+            int lastItem = userTasks.size() - 1;
+            if (!userTasks.get(lastItem).equals(defaultTasks.get(lastItem))) {
+                numberOfError++;
+                erortxt.setText("Number of errors: " + numberOfError);
+                Log.i("last user task",userTasks.get(lastItem) );
+                Log.i("last default tag",defaultTasks.get(lastItem) );
+            }
+        }
+    }
+
+
+    @Override
     public void onPause() {
         mediaPlayer.pause();
         super.onPause();
@@ -204,4 +322,6 @@ public class ButtonActivity extends Activity implements OnClickListener {
         mediaPlayer.pause();
         super.onDestroy();
     }
+
+
 }

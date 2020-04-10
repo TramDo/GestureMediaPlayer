@@ -40,7 +40,7 @@
 
                 <TextView
                     android:id="@+id/InitialInputText"
-                    android:gravity="right"
+                    android:gravity="left"
                     android:paddingRight="5dp"
                     android:text="Initials = "
                     android:textAppearance="?android:attr/textAppearanceMedium"/>
@@ -51,7 +51,7 @@
 
                 <TextView
                     android:id="@+id/GenderText"
-                    android:gravity="right"
+                    android:gravity="left"
                     android:paddingRight="5dp"
                     android:text="Gender = "
                     android:textAppearance="?android:attr/textAppearanceMedium"/>
@@ -62,7 +62,7 @@
 
                 <TextView
                     android:id="@+id/trialLabelInput"
-                    android:gravity="right"
+                    android:gravity="left"
                     android:paddingRight="5dp"
                     android:text="Number of Trials = "
                     android:textAppearance="?android:attr/textAppearanceMedium"/>
@@ -74,7 +74,7 @@
 
                 <TextView
                     android:id="@+id/Method"
-                    android:gravity="right"
+                    android:gravity="left"
                     android:paddingRight="5dp"
                     android:text="Input Method = "
                     android:textAppearance="?android:attr/textAppearanceMedium"/>
@@ -86,7 +86,7 @@
 
                 <TextView
                     android:id="@+id/TimePerTrial"
-                    android:gravity="right"
+                    android:gravity="left"
                     android:layout_width="10dp"
                     android:paddingRight="5dp"
                     android:text="Time Per Trial = "
@@ -101,7 +101,7 @@
 
                 <TextView
                     android:id="@+id/averagetrailtime"
-                    android:gravity="right"
+                    android:gravity="left"
                     android:paddingRight="5dp"
                     android:text="Average Per Trial = "
                     android:textAppearance="?android:attr/textAppearanceMedium"/>
@@ -113,7 +113,7 @@
 
                 <TextView
                     android:id="@+id/errornumber"
-                    android:gravity="right"
+                    android:gravity="left"
                     android:paddingRight="5dp"
                     android:layout_width="10dp"
                     android:text="Error Number = "
@@ -125,7 +125,7 @@
 
                 <TextView
                     android:id="@+id/errorrate"
-                    android:gravity="right"
+                    android:gravity="left"
                     android:paddingRight="5dp"
                     android:text="Error Rate = "
                     android:textAppearance="?android:attr/textAppearanceMedium"/>

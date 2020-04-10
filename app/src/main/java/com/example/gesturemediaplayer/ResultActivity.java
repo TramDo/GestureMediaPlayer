@@ -12,6 +12,9 @@ import androidx.annotation.Nullable;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ResultActivity extends Activity {
 
     private float durationTimeArray[];
@@ -22,6 +25,9 @@ public class ResultActivity extends Activity {
     private String errorNumberForUI = "";
     private float averageTrialTime;
     private  float errorRate;
+    private  String method;
+    private List<Float> timePerTrial = new ArrayList<Float>();
+    private List<Integer>errorPerTrial = new ArrayList<Integer>();
 
 
     //UI
@@ -41,35 +47,63 @@ public class ResultActivity extends Activity {
         errorRateUI = findViewById(R.id.errorrate);
 
         Bundle extras = getIntent().getExtras();
+        method = extras.getString("method");
+
         if (extras != null) {
-            durationTimeArray =  extras.getFloatArray("trailTimeArray");
-            for (float i : durationTimeArray) {
-                durationForUI += i + ", ";
-                averageTrialTime += i;
-                Log.i("MYDEBUG", "saved time" + String.valueOf(i));
-            }
-            errorTimeArray =  extras.getIntArray("errornumberArray");
-            for (int i : errorTimeArray) {
-                errorNumberForUI += i + ", ";
-                errorRate += i;
-                //averageTrialTime += i;
-               // Log.i("MYDEBUG", "saved time" + String.valueOf(i));
+
+            if (method.equals("Sensor")) {
+
+                durationTimeArray = extras.getFloatArray("trailTimeArray");
+                errorTimeArray = extras.getIntArray("errornumberArray");
+                errorNumber = extras.getInt("errornumber");
+                Log.i("MYDEBUG", "errorNumber" + String.valueOf(errorNumber));
+                userData = (UserData) getIntent().getSerializableExtra("userdata");
+
+                for (float i : durationTimeArray) {
+                    durationForUI += String.format("%.02f", i) + ", ";
+                    averageTrialTime += i;
+                    Log.i("MYDEBUG", "saved time" + String.valueOf(i));
+                }
+
+                for (int i : errorTimeArray) {
+                    errorNumberForUI += i + ", ";
+                    errorRate += i;
+                    //averageTrialTime += i;
+                    // Log.i("MYDEBUG", "saved time" + String.valueOf(i));
+                }
+
             }
 
-            durationTimeArray =  extras.getFloatArray("trailTimeArray");
-            errorNumber = extras.getInt("errornumber");
-            Log.i("MYDEBUG", "errorNumber" + String.valueOf(errorNumber));
-            userData = (UserData) getIntent().getSerializableExtra("userdata");
+            else if (method.equals("Button")) {
+
+                timePerTrial = (List<Float>) extras.getSerializable("timePerTrial");
+                errorPerTrial = (List<Integer>) extras.getSerializable("errorPerTrial");
+                userData = (UserData) getIntent().getSerializableExtra("userdata");
+
+                for (float i : timePerTrial) {
+                    durationForUI += String.format("%.02f", i) + ", ";
+                    averageTrialTime += i;
+                    Log.i("MYDEBUG", "saved time" + String.valueOf(i));
+                }
+
+                for (int i : errorPerTrial) {
+                    errorNumberForUI += i + ", ";
+                    errorRate += i;
+                }
+
+            }
+
+
             averageTrialTime /= userData.getTrialnumber() + 1;
-            errorRate = (errorRate/((userData.getTrialnumber() + 1) * 8)) * 100;
-            initialUI.setText("initial = " + userData.getInitial());
+            errorRate = (errorRate / ((userData.getTrialnumber() + 1) * 8)) * 100;
+            initialUI.setText("Initial = " + userData.getInitial());
             genderUI.setText("Gender = " + userData.getGender());
             TrialUI.setText("Number of Trials = " + userData.getTrial());
             inputUI.setText("Input Method = " + userData.getMethod());
-            durationtimeUI.setText("Time Per Trial = " + durationForUI);
-            averagetimeUI.setText("Average Per Trial = " + averageTrialTime);
+            durationtimeUI.setText("Time Per Trial = " + durationForUI + " (s)");
+            averagetimeUI.setText("Average Per Trial = " + String.format("%.02f", averageTrialTime) + " (s)");
             errorNumberUI.setText("Error Number = " + errorNumberForUI);
-            errorRateUI.setText("Error Rate = " +  String.format("%.02f", errorRate) + "%");
+            errorRateUI.setText("Error Rate = " + String.format("%.02f", errorRate) + "%");
         }
 
     }
