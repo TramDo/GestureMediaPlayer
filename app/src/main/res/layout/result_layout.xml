@@ -1,6 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ff123456"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
 
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ff123456"
+        android:gravity="center_horizontal"
+        android:layout_gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/setupTitle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#ff234567"
+            android:gravity="center_horizontal"
+            android:paddingBottom="20dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="20dp"
+            android:text="Results"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="25sp"/>
+
+        <TableLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+
+            <TableRow>
+
+                <TextView
+                    android:id="@+id/LapsText"
+                    android:gravity="right"
+                    android:paddingRight="5dp"
+                    android:text="Initials = "
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:id="@+id/paramLabelGain"
+                    android:gravity="right"
+                    android:paddingRight="5dp"
+                    android:text="Number of Trails = "
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:id="@+id/wallhitsc"
+                    android:gravity="right"
+                    android:paddingRight="5dp"
+                    android:text="Input Method = "
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:id="@+id/onlapavr"
+                    android:gravity="right"
+                    android:paddingRight="5dp"
+                    android:text="Time Per Trail = "
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:id="@+id/averagetrailtime"
+                    android:gravity="right"
+                    android:paddingRight="5dp"
+                    android:text="Average Per Trail = "
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+
+            </TableRow>
+
+        </TableLayout>
+
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/Buttonsetup"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="clickSetup"
+                android:text="Setup"
+                android:textAppearance="?android:attr/textAppearanceMedium">
+            </Button>
+
+            <Button
+                android:id="@+id/Button03"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="clickExitApp"
+                android:text="Exit"
+                android:textAppearance="?android:attr/textAppearanceMedium">
+            </Button>
+        </LinearLayout>
+
+    </LinearLayout>
 </LinearLayout>

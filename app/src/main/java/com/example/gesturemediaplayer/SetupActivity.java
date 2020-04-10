@@ -29,6 +29,10 @@ public class SetupActivity extends Activity implements AdapterView.OnItemSelecte
         ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(this,R.layout.spinnerstyle,
                 INPUT_METHOD_STRING);
         spinMethod.setAdapter(adapter);
+
+        if (getIntent().getBooleanExtra("EXIT", false)) {
+            finish();
+        }
     }
 
     @Override

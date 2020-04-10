@@ -2,6 +2,7 @@ package com.example.gesturemediaplayer;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -9,13 +10,18 @@ import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
+import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class SensorActivity extends Activity implements SensorEventListener {
@@ -23,7 +29,9 @@ public class SensorActivity extends Activity implements SensorEventListener {
     final static String MYDEBUG = "MYDEBUG";
 
     final static int changedDegreeValue = 20;
-    final static int changedDegreeValuePitch = 20;
+    final static int changedDegreeValuePitch = 30;
+    final static int timeForCount = 1000000;
+    final static int totalTrailTime = 1;
 
     private Handler myHandler = new Handler();
 
@@ -40,14 +48,23 @@ public class SensorActivity extends Activity implements SensorEventListener {
     private float roll;
     private boolean enterActivity;
     private boolean changed = false;
+    private CountDownTimer countUptimer;
 
     private double startTime = 0;
     private double finalTime = 0;
+
+    //variable for experiment use
+    private int trailTime = 0;
+    private int currentGestureIndex = 0;
+    private float currenttime = 0.0f;
+    private String[] GestureArray = {"Play", "Up", "Up", "Down", "Down", "Pause", "Play", "Pause"};
+    private List<Float> durationTimeList = new ArrayList<Float>();
 
     //UI component
     private SeekBar volumeSeekbar, progressSeekbar;
     private ImageButton pausePlaybutton;
     private TextView durationtxt,  progresstxt, remainTimetxt, titletxt;
+    private Chronometer timer;
 
 
     @Override
@@ -64,6 +81,7 @@ public class SensorActivity extends Activity implements SensorEventListener {
         progresstxt = (TextView)findViewById(R.id.progresstxt);
         remainTimetxt = (TextView)findViewById(R.id.remainTimetxt);
         titletxt = (TextView)findViewById(R.id.titletxt);
+        timer =  findViewById(R.id.chrono);
         titletxt.setText("Song.mp3");
 
         sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
@@ -89,6 +107,21 @@ public class SensorActivity extends Activity implements SensorEventListener {
                 TimeUnit.MILLISECONDS.toMinutes((long) finalTime),
                 TimeUnit.MILLISECONDS.toSeconds((long) finalTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((long) finalTime)))
         );
+
+        countUptimer = new CountDownTimer(timeForCount, 100) {
+
+            public void onTick(long millisUntilFinished) {
+
+                Log.i(MYDEBUG, "seconds remaining: " +( timeForCount - millisUntilFinished) / (float)1000);
+                currenttime = ( timeForCount - millisUntilFinished) / (float)1000;
+            }
+
+            public void onFinish() {
+                Log.i(MYDEBUG, "done");
+            }
+        };
+
+
     }
 
     @Override
@@ -96,6 +129,7 @@ public class SensorActivity extends Activity implements SensorEventListener {
        // mediaPlayer.pause();
         super.onResume();
         enterActivity = false;
+        trailTime = 0;
         myHandler.postDelayed(UpdateSongTime, 100);
         sensorManager.registerListener(this, gyroSensor, SensorManager.SENSOR_DELAY_NORMAL);
         sensorManager.registerListener(this, rotateSensor, SensorManager.SENSOR_DELAY_NORMAL);
@@ -116,6 +150,9 @@ public class SensorActivity extends Activity implements SensorEventListener {
     protected void onStop() {
         mediaPlayer.pause();
         pausePlaybutton.setImageResource(R.drawable.play);
+        mediaPlayer.stop();
+        if (countUptimer != null)
+            countUptimer.cancel();
         super.onStop();
     }
 
@@ -123,6 +160,8 @@ public class SensorActivity extends Activity implements SensorEventListener {
     protected void onDestroy() {
         mediaPlayer.pause();
         mediaPlayer.stop();
+        if (countUptimer != null)
+            countUptimer.cancel();
         super.onDestroy();
     }
 
@@ -168,9 +207,9 @@ public class SensorActivity extends Activity implements SensorEventListener {
             SensorManager.getOrientation(adjustedRotationMatrix, orientation);
             pitch = orientation[1] * -57;
             roll = orientation[2] * -57;
-             Log.i(MYDEBUG, "X" + String.valueOf(pitch));
+           //  Log.i(MYDEBUG, "X" + String.valueOf(pitch));
 //            Log.i(MYDEBUG, "Y" + String.valueOf(orientations[1]));
-            Log.i(MYDEBUG, "Z" +String.valueOf(roll));
+          //  Log.i(MYDEBUG, "Z" +String.valueOf(roll));
             if (!enterActivity){
                 enterActivity = !enterActivity;
                 currentPitchValue = pitch;
@@ -179,17 +218,50 @@ public class SensorActivity extends Activity implements SensorEventListener {
             if (roll >= -30 && roll <= 30){
                 changed = false;
             }
-            if (pitch >= 30.0f && Math.abs(pitch - currentPitchValue) >= changedDegreeValuePitch){
+            if (pitch >= 20.0f && Math.abs(pitch - currentPitchValue) >= changedDegreeValuePitch){
                 // mediaPlayer.start();
               //  Log.i(MYDEBUG, "X" + String.valueOf(pitch));
-                mediaPlayer.pause();
+                if (mediaPlayer.isPlaying())
+                    mediaPlayer.pause();
                 pausePlaybutton.setImageResource(R.drawable.play);
+                if ( currentGestureIndex < GestureArray.length && GestureArray[currentGestureIndex] == "Pause"){
+                    currentGestureIndex++;
+                    if (currentGestureIndex == GestureArray.length){
+                        if (countUptimer != null)
+                            countUptimer.cancel();
+                        trailTime++;
+                        durationTimeList.add(currenttime);
+
+                        currentGestureIndex = 0;
+                        Log.i(MYDEBUG, "trail time" + String.valueOf(currenttime));
+                        if (trailTime == totalTrailTime){
+                            trailTime = 0;
+                            durationTimeList = new ArrayList<>();
+                            Bundle bundle = new Bundle();
+                            //bundle.putf
+                            Intent intent = new Intent(this, ResultActivity.class);
+                            startActivity(intent);
+                        }
+                    }
+                }
+
             }
-            else if (pitch <= -30.0f && Math.abs(pitch - currentPitchValue) >= changedDegreeValuePitch){
+            else if (pitch <= -20.0f && Math.abs(pitch - currentPitchValue) >= changedDegreeValuePitch){
                 // mediaPlayer.pause();
                 //Log.i(MYDEBUG, "X" + String.valueOf(pitch));
                 mediaPlayer.start();
                 pausePlaybutton.setImageResource(R.drawable.pause);
+
+                if (currentGestureIndex == 0){
+                    countUptimer.cancel();
+                    countUptimer.start();
+                }
+                else{
+                    //countUptimer.start();
+                }
+                if ( currentGestureIndex < GestureArray.length && GestureArray[currentGestureIndex] == "Play"){
+                    currentGestureIndex++;
+                }
             }
             else if (roll <= -30.0f && roll - currentRollValue <= -changedDegreeValue && Math.abs(pitch) < 30 && !changed){
                  // audioManager.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_PLAY_SOUND);
@@ -201,7 +273,9 @@ public class SensorActivity extends Activity implements SensorEventListener {
                 float volumePercent = currentvolume / (float)maxvolume;
                 progresstxt.setText(String.valueOf(Math.round((  volumePercent * 100)) + "%"));
                 changed = !changed;
-
+                if ( currentGestureIndex < GestureArray.length && GestureArray[currentGestureIndex] == "Up"){
+                    currentGestureIndex++;
+                }
             }
             else if(roll >= 30.0f  && roll - currentRollValue >= changedDegreeValue &&  Math.abs(pitch) < 30 && !changed){
                 //  audioManager.adjustVolume(AudioManager.ADJUST_LOWER, AudioManager.FLAG_PLAY_SOUND);
@@ -213,6 +287,9 @@ public class SensorActivity extends Activity implements SensorEventListener {
                 float volumePercent = currentvolume / (float)maxvolume;
                 progresstxt.setText(String.valueOf(Math.round((  volumePercent * 100)) + "%"));
                 changed = !changed;
+                if ( currentGestureIndex < GestureArray.length && GestureArray[currentGestureIndex] == "Down"){
+                    currentGestureIndex++;
+                }
             }
         }
         currentRollValue = roll;
