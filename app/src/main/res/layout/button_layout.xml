@@ -134,7 +134,7 @@
         android:layout_alignStart="@+id/imageView"
         android:layout_alignRight="@+id/imageView"
         android:layout_alignEnd="@+id/imageView"
-        android:layout_marginBottom="30dp">
+        android:layout_marginBottom="10dp">
     </SeekBar>
 
     <TextView
@@ -147,6 +147,26 @@
         android:layout_above="@id/volumeControl"
         android:layout_centerHorizontal="true" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Number of trial: 0"
+        android:layout_marginBottom="10dp"
+        android:id="@+id/trialtxt"
+        android:textColor="#C1728E"
+        android:layout_above="@id/erortxt"
+        android:layout_centerHorizontal="true" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Number of error: 0"
+        android:layout_marginBottom="10dp"
+        android:id="@+id/erortxt"
+        android:textColor="#C1728E"
+        android:layout_above="@id/volumetxt"
+        android:layout_centerHorizontal="true" />
     <TextView
         android:id="@+id/progresstxt"
         android:layout_width="wrap_content"

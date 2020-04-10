@@ -53,6 +53,10 @@ public class SetupActivity extends Activity implements AdapterView.OnItemSelecte
         if (getIntent().getBooleanExtra("EXIT", false)) {
             finish();
         }
+
+        if (getIntent().getBooleanExtra("EXIT", false)) {
+            finish();
+        }
     }
 
     @Override
