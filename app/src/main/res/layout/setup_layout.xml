@@ -26,16 +26,22 @@
             android:text="@string/setuptitletext"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="#F1FAF1" />
-
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_margin="10dp"
+    android:gravity="right"
+    android:orientation="vertical">
         <TableLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:layout_margin="10dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp">
 
-            <TableRow>
+            <TableRow
+                >
 
                 <TextView
                     android:id="@+id/InitialInputText"
@@ -53,7 +59,7 @@
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:width="100dp"
-                    android:background="#E3E3E3"
+                    android:background="#9B8B8A"
                     android:gravity="left"
                     android:inputType="text"
                     android:padding="10dp"
@@ -64,7 +70,7 @@
         <TableLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+
             android:layout_margin="10dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp">
@@ -83,8 +89,11 @@
 
                 <Spinner
                     android:id="@+id/GenderInput"
+                    android:layout_width="100dp"
                     android:layout_gravity="center"
                     android:layout_weight="1"
+                    android:background="#B98686"
+                    android:dropDownWidth="match_parent"
                     android:gravity="left"
                     android:padding="10dp"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -94,7 +103,7 @@
         <TableLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+
             android:layout_margin="10dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp">
@@ -113,8 +122,10 @@
 
                 <Spinner
                     android:id="@+id/paramInput"
+                    android:layout_width="100dp"
                     android:layout_gravity="center"
                     android:layout_weight="1"
+                    android:background="#DA9C9C"
                     android:gravity="left"
                     android:padding="10dp"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -123,7 +134,7 @@
         <TableLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+
             android:layout_margin="10dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp">
@@ -137,19 +148,23 @@
                     android:gravity="right"
                     android:paddingRight="5dp"
                     android:text="Number of trials"
+
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="#F1FAF1" />
 
                 <Spinner
                     android:id="@+id/TrialInput"
+                    android:layout_width="100dp"
                     android:layout_gravity="center"
                     android:layout_weight="1"
+                    android:background="#5A4949"
+                    android:dropDownWidth="match_parent"
                     android:gravity="left"
                     android:padding="10dp"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
             </TableRow>
         </TableLayout>
-
+</LinearLayout>
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

@@ -69,7 +69,7 @@ public class SensorActivity extends Activity implements SensorEventListener {
     //UI component
     private SeekBar volumeSeekbar, progressSeekbar;
     private ImageButton pausePlaybutton;
-    private TextView durationtxt,  progresstxt, remainTimetxt, titletxt, gestureText;
+    private TextView durationtxt,  progresstxt, remainTimetxt, titletxt, gestureText, trialtxt, erortxt;
 
 
 
@@ -94,6 +94,8 @@ public class SensorActivity extends Activity implements SensorEventListener {
         remainTimetxt = (TextView)findViewById(R.id.remainTimetxt);
         gestureText = findViewById(R.id.gesturetext);
         titletxt = (TextView)findViewById(R.id.titletxt);
+        trialtxt = (TextView)findViewById(R.id.trialtxt);
+        erortxt = (TextView)findViewById(R.id.erortxt);
         titletxt.setText("Song.mp3");
         gestureText.setText("Play");
 
@@ -149,6 +151,8 @@ public class SensorActivity extends Activity implements SensorEventListener {
         durationTimeArray = new float[totalTrailTime];
         errorTimeArray = new int[totalTrailTime];
         gestureText.setText("Play");
+        trialtxt.setText("Number of trials: " + trailTime);
+        erortxt.setText("Number of errors: " + errorNumber);
        // Log.i(MYDEBUG, "trail time" + String.valueOf(durationTimeArray[trailTime]));
         myHandler.postDelayed(UpdateSongTime, 100);
         sensorManager.registerListener(this, gyroSensor, SensorManager.SENSOR_DELAY_NORMAL);
@@ -243,7 +247,7 @@ public class SensorActivity extends Activity implements SensorEventListener {
             if (roll >= -30 && roll <= 30){
                 changed = false;
             }
-            if (pitch >= -30 && pitch <= 30){
+            if (pitch >= -20 && pitch <= 20){
                 pchanged = false;
             }
             if (pitch >= 20.0f && pitch - currentPitchValue >= changedDegreeValuePitch && !pchanged){
@@ -262,8 +266,12 @@ public class SensorActivity extends Activity implements SensorEventListener {
                         errorTimeArray[trailTime] = errorNumber;
                         Log.i(MYDEBUG, "trail time" + String.valueOf( errorNumber));
                         trailTime++;
+
                         currentGestureIndex = 0;
                         errorNumber = 0;
+                        trialtxt.setText("Number of trials: " + trailTime);
+                        erortxt.setText("Number of errors: " + errorNumber);
+                        gestureText.setText(GestureArray[currentGestureIndex]);
                         if (trailTime == totalTrailTime){
                             Bundle bundle = new Bundle();
                             Intent intent = new Intent(this, ResultActivity.class);
@@ -286,6 +294,7 @@ public class SensorActivity extends Activity implements SensorEventListener {
                 else{
                     Log.i("MYDEBUGG", "error");
                     errorNumber++;
+                    erortxt.setText("Number of errors: " + errorNumber);
                 }
 
             }
@@ -309,6 +318,7 @@ public class SensorActivity extends Activity implements SensorEventListener {
                 else{
                     Log.i("MYDEBUGG", String.valueOf(pchanged));
                     errorNumber++;
+                    erortxt.setText("Number of errors: " + errorNumber);
                 }
             }
             else if (roll <= -30.0f && roll - currentRollValue <= -changedDegreeValue && Math.abs(pitch) < 30 && !changed){
@@ -328,6 +338,7 @@ public class SensorActivity extends Activity implements SensorEventListener {
                 else{
                     Log.i("MYDEBUGG", "error3");
                     errorNumber++;
+                    erortxt.setText("Number of errors: " + errorNumber);
                 }
             }
             else if(roll >= 30.0f  && roll - currentRollValue >= changedDegreeValue &&  Math.abs(pitch) < 30 && !changed){
@@ -347,6 +358,7 @@ public class SensorActivity extends Activity implements SensorEventListener {
                 else{
                     Log.i("MYDEBUGG", "error4");
                     errorNumber++;
+                    erortxt.setText("Number of errors: " + errorNumber);
                 }
             }
             currentRollValue = roll;

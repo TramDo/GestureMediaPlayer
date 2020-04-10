@@ -146,7 +146,15 @@
         android:textColor="#72B5C1"
         android:layout_above="@id/volumeControl"
         android:layout_centerHorizontal="true" />
-
+    <TextView android:text="button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:id="@+id/buttontiptext"
+        android:textSize="30dp"
+        android:textColor="#72B5C1"
+        android:layout_below="@+id/imageView"
+        android:layout_centerHorizontal="true" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

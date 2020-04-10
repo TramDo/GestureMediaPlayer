@@ -39,7 +39,7 @@ public class ButtonActivity extends Activity implements OnClickListener {
     private Handler myHandler = new Handler();
     private int forwardTime = 5000;
     private int backwardTime = 5000;
-    private TextView durationtxt, remainTimetxt, titletxt, progresstxt, trialtxt, erortxt;
+    private TextView durationtxt, remainTimetxt, titletxt, progresstxt, trialtxt, erortxt, gestureText;
     private SeekBar volumeControl, seekbar; //slider
 
     private UserData userData;
@@ -90,6 +90,8 @@ public class ButtonActivity extends Activity implements OnClickListener {
         btnForward = (ImageButton)findViewById(R.id.btnForward);
         btnForward.setOnClickListener(this);
         iv = (ImageView)findViewById(R.id.imageView);
+        gestureText = findViewById(R.id.buttontiptext);
+        gestureText.setText(PLAY);
 
         durationtxt = (TextView)findViewById(R.id.durationtxt);
         titletxt = (TextView)findViewById(R.id.titletxt);
@@ -274,7 +276,7 @@ public class ButtonActivity extends Activity implements OnClickListener {
             userTasks.clear();
             trials++;
             trialtxt.setText("Number of trials: " + trials);
-
+            gestureText.setText(PLAY);
         }
 
     }
@@ -297,10 +299,16 @@ public class ButtonActivity extends Activity implements OnClickListener {
             int lastItem = userTasks.size() - 1;
             if (!userTasks.get(lastItem).equals(defaultTasks.get(lastItem))) {
                 numberOfError++;
+
                 erortxt.setText("Number of errors: " + numberOfError);
                 Log.i("last user task",userTasks.get(lastItem) );
                 Log.i("last default tag",defaultTasks.get(lastItem) );
+                userTasks.remove(lastItem);
             }
+            else if(userTasks.size() < defaultTasks.size()){
+                gestureText.setText(defaultTasks.get(lastItem + 1));
+            }
+
         }
     }
 

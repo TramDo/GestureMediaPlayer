@@ -37,7 +37,26 @@
         android:textColor="#72B5C1"
         android:layout_below="@+id/imageView"
         android:layout_centerHorizontal="true" />
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Number of trial: 0"
+        android:layout_marginBottom="10dp"
+        android:id="@+id/trialtxt"
+        android:textColor="#C1728E"
+        android:layout_above="@id/erortxt"
+        android:layout_centerHorizontal="true" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Number of error: 0"
+        android:layout_marginBottom="10dp"
+        android:id="@+id/erortxt"
+        android:textColor="#C1728E"
+        android:layout_above="@id/volumetxt"
+        android:layout_centerHorizontal="true" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
